@@ -5,7 +5,7 @@ public class ToolController : MonoBehaviour
     public NewMonoBehaviourScript playermov;
     Rigidbody2D rb;
 
-    [SerializeField] float offsetDistance = 1f;
+    [SerializeField] float offsetDistance = 1.2f;
     [SerializeField] float pickupZone = 1.5f;
 
     private void Awake()
@@ -24,7 +24,7 @@ public class ToolController : MonoBehaviour
 
     private void UseTool()
     {
-        Vector2 pos = rb.position * playermov.lastPos * offsetDistance;
+        Vector2 pos = rb.position + playermov.lastPos.normalized * offsetDistance;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(pos, pickupZone);
 
         foreach(Collider2D c in colliders)
