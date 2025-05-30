@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2958021491742041599}
   - component: {fileID: 118082457172267714}
   - component: {fileID: 4665643293504658094}
+  - component: {fileID: 1861595316411270777}
   m_Layer: 0
   m_Name: Tree1
   m_TagString: Untagged
@@ -163,7 +164,7 @@ BoxCollider2D:
   m_Offset: {x: -0.030872464, y: -0.50669456}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0}
     oldSize: {x: 3.59375, y: 4.40625}
     newSize: {x: 3.59375, y: 4.40625}
     adaptiveTilingThreshold: 0.5
@@ -185,3 +186,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointsForCutting: 1
+--- !u!114 &1861595316411270777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3902872058713870222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8425523ee76624a95909344a5d90524d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swaySpeed: 1
+  maxSwayAngle: 4
