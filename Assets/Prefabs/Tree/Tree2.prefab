@@ -165,7 +165,11 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     pivot: {x: 0.5, y: 0.5}
+=======
+    pivot: {x: 0.48329562, y: 0.1297057}
+>>>>>>> Stashed changes
 =======
     pivot: {x: 0.48329562, y: 0.1297057}
 >>>>>>> Stashed changes
