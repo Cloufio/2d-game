@@ -180,6 +180,9 @@ BoxCollider2D:
 =======
     pivot: {x: 0.48329562, y: 0.1297057}
 >>>>>>> Stashed changes
+=======
+    pivot: {x: 0.48329562, y: 0.1297057}
+>>>>>>> Stashed changes
     oldSize: {x: 3.09375, y: 4.78125}
     newSize: {x: 3.09375, y: 4.78125}
     adaptiveTilingThreshold: 0.5
