@@ -8386,7 +8386,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3c3d9d0c83b4894a9405562380c12c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreThresholdForGoodEnding: 30
   goodEndingSceneIndex: 2
   badEndingSceneIndex: 3
   fadePanel: {fileID: 274176636}
