@@ -5,15 +5,21 @@ using System.Collections;     // Required for Coroutines
 
 public class GameEndManager : MonoBehaviour
 {
-    [Header("Bad Ending Conditions")]
-    public int scoreThresholdForBadEnding = 30;
-    // We no longer need a 'timeOverThresholdInSeconds' here,
-    // as ScoreManager will tell us when time is up.
+    [Header("Game Conditions")]
+    [Tooltip("The score threshold to differentiate between endings.")]
+    public int scoreThresholdForGoodEnding = 30;
+
+    [Header("Scene Transitions")]
+    [Tooltip("Build index for the scene to load if score > scoreThresholdForGoodEnding.")]
+    public int goodEndingSceneIndex = 2; // Default for score > 30
+    [Tooltip("Build index for the scene to load if score <= scoreThresholdForGoodEnding.")]
+    public int badEndingSceneIndex = 3;  // Default for score <= 30
 
     [Header("Fade Settings")]
-    public Image fadePanel;       // Assign your UI Image for fading in the Inspector
-    public float fadeDuration = 2f; // How long the fade should take
-    // public string badEndingSceneName = "Scenes/BadEnding"; // Adjusted from your previous update
+    [Tooltip("The UI Image to use for fading in the Inspector.")]
+    public Image fadePanel;
+    [Tooltip("How long the fade should take in seconds.")]
+    public float fadeDuration = 2f;
 
     private bool conditionsHaveBeenMet = false;
     private ScoreManager scoreManagerInstance;
@@ -54,34 +60,46 @@ public class GameEndManager : MonoBehaviour
         int currentScore = scoreManagerInstance.currentScore;
 
         // Check if time has run out based on ScoreManager's state
-        // Time is over if the timer is no longer running AND time remaining is zero or less.
-        // ScoreManager sets timerIsRunning to false when timeRemaining hits 0.
         bool timeIsOver = !scoreManagerInstance.timerIsRunning && scoreManagerInstance.timeRemaining <= 0;
 
-        // Check for the bad ending conditions
-        if (currentScore > scoreThresholdForBadEnding && timeIsOver)
+        // Check if game ending conditions are met (only time being over)
+        if (timeIsOver)
         {
             conditionsHaveBeenMet = true;
-            Debug.Log("Bad Ending conditions met! Score: " + currentScore + ", Time has run out.");
-            StartCoroutine(PerformFadeAndLoadScene());
+            int sceneIndexToLoad;
+
+            if (currentScore > scoreThresholdForGoodEnding)
+            {
+                Debug.Log($"Time has run out! Score ({currentScore}) is > {scoreThresholdForGoodEnding}. Loading 'Good Ending' scene (index {goodEndingSceneIndex}).");
+                sceneIndexToLoad = goodEndingSceneIndex;
+            }
+            else
+            {
+                Debug.Log($"Time has run out! Score ({currentScore}) is <= {scoreThresholdForGoodEnding}. Loading 'Bad Ending' scene (index {badEndingSceneIndex}).");
+                sceneIndexToLoad = badEndingSceneIndex;
+            }
+
+            StartCoroutine(PerformFadeAndLoadScene(sceneIndexToLoad));
         }
     }
 
-    IEnumerator PerformFadeAndLoadScene()
+    IEnumerator PerformFadeAndLoadScene(int targetSceneIndex)
     {
+        // Ensure Time.timeScale is 1 for the fade to work correctly,
+        // in case it was set to 0 when the timer ran out by another script.
         if (Time.timeScale == 0f)
         {
-            Time.timeScale = 1f; // IMPORTANT: Unpause if time was stopped
-            Debug.Log("Time.timeScale was 0, resetting to 1 for fade.");
+            Time.timeScale = 1f;
+            Debug.Log("GameEndManager: Time.timeScale was 0, resetting to 1 for fade.");
         }
 
-        Debug.Log("Starting fade to black...");
+        Debug.Log($"GameEndManager: Starting fade to black for scene index {targetSceneIndex}.");
         float elapsedTime = 0f;
-        Color panelColor = fadePanel.color;
+        Color panelColor = fadePanel.color; // Get the base color (e.g., black)
 
         while (elapsedTime < fadeDuration)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.deltaTime; // Uses scaled time, which is now ensured to be 1.
             float newAlpha = Mathf.Clamp01(elapsedTime / fadeDuration);
             fadePanel.color = new Color(panelColor.r, panelColor.g, panelColor.b, newAlpha);
             yield return null; // Wait for the next frame
@@ -89,8 +107,8 @@ public class GameEndManager : MonoBehaviour
 
         // Ensure it's fully opaque before changing scene
         fadePanel.color = new Color(panelColor.r, panelColor.g, panelColor.b, 1f);
-        // Debug.Log("Fade complete. Loading scene: " + badEndingSceneName);
+        Debug.Log($"GameEndManager: Fade complete. Loading scene with build index {targetSceneIndex}.");
 
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(targetSceneIndex);
     }
 }
