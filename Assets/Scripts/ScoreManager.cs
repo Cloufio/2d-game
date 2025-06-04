@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour
 
     // --- Score Variables (Existing) ---
     public Text scoreTextElement;
-    private int currentScore = 0;
+    public int currentScore = 0;
 
     // --- Timer Variables (Existing) ---
     public Text timerTextElement;
@@ -51,7 +51,7 @@ public class ScoreManager : MonoBehaviour
                 Debug.Log("Time has run out!");
                 timeRemaining = 0;
                 timerIsRunning = false;
-                DisplayTime(timeRemaining); // Ensure display shows 00:00:00
+                DisplayTime(timeRemaining); // Ensure display shows 00:00
                 // TimeUpActions(); // Call your game over logic
             }
         }
@@ -80,7 +80,7 @@ public class ScoreManager : MonoBehaviour
         return currentScore;
     }
 
-    // --- Timer Display Method (MODIFIED) ---
+    // --- Timer Display Method (MODIFIED for Seconds:Milliseconds) ---
     void DisplayTime(float timeToDisplay)
     {
         if (timerTextElement == null)
@@ -94,19 +94,20 @@ public class ScoreManager : MonoBehaviour
             timeToDisplay = 0;
         }
 
-        // Calculate minutes, seconds, and hundredths of a second (milliseconds)
-        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
-        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
-        // To get the hundredths of a second part:
-        float milliseconds = Mathf.FloorToInt((timeToDisplay * 100f) % 100f);
+        // Calculate total seconds and hundredths of a second (milliseconds)
+        float totalSeconds = Mathf.FloorToInt(timeToDisplay);
+        // To get the hundredths of a second part (00-99):
+        float hundredths = Mathf.FloorToInt((timeToDisplay * 100f) % 100f);
 
-        // Update the timerTextElement with the new format
-        timerTextElement.text = string.Format("Time : {0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
+        // Update the timerTextElement with the new format "SS:MS"
+        // For example, 5.23 seconds will be "05:23"
+        // 65.78 seconds will be "65:78"
+        timerTextElement.text = string.Format("Time : {0:00}:{1:00}", totalSeconds, hundredths);
     }
 
     // void TimeUpActions()
     // {
-    //    Debug.Log("GAME OVER - Time's Up!");
-    //    // Time.timeScale = 0;
+    //     Debug.Log("GAME OVER - Time's Up!");
+    //     // Time.timeScale = 0;
     // }
 }
