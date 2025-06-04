@@ -22,7 +22,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
 
-        // if (movement.x != 0) movement.y = 0;
+        //if (movement.x != 0) movement.y = 0;
 
         if (movement.x != 0 || movement.y != 0)
         {
