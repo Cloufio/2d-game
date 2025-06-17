@@ -1,40 +1,68 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public class TreeCut : Tool // Make sure TreeCut still inherits from Tool
+public class TreeCut : Tool
 {
     [Header("Tree Stats")]
-    [SerializeField] int treeHealth = 25; // The tree's starting health
-    [SerializeField] int damagePerHit = 10; // How much damage each hit does
+    [SerializeField] int treeHealth = 25;
+    [SerializeField] int damagePerHit = 10;
 
     [Header("Scoring")]
-    [SerializeField] int pointsForCutting = 1; // How many points this tree gives when cut
+    [SerializeField] int pointsForCutting = 1;
 
-    // This 'Hit' method is called by the ToolController.
-    // It now handles health reduction before destroying the object.
+    [Header("UI Visuals")]
+    // We keep this public so we can see in the Inspector if it was found correctly,
+    // but we no longer need to drag anything into it manually.
+    public Slider healthBarSlider;
+
+    private int maxHealth;
+
+    private void Awake()
+    {
+        // --- THIS IS THE NEW CODE ---
+        // Automatically find the Slider component within this prefab's children.
+        healthBarSlider = GetComponentInChildren<Slider>();
+
+        // A quick check to make sure it was found, to prevent future errors.
+        if (healthBarSlider == null)
+        {
+            Debug.LogError(gameObject.name + " could not find a Slider in its children! Make sure the health bar is part of the prefab.");
+        }
+        // --- END OF NEW CODE ---
+
+
+        // Store the maximum health so we can calculate the fill percentage later
+        maxHealth = treeHealth;
+
+        // You can now safely hide the health bar here if you want.
+        healthBarSlider.gameObject.SetActive(false);
+    }
+
     public override void Hit()
     {
-        // --- 1. Reduce Health ---
+        // Now that the slider is found automatically in Awake,
+        // this Hit() function will work perfectly without any changes.
+
+        if (healthBarSlider != null && !healthBarSlider.gameObject.activeInHierarchy)
+        {
+            healthBarSlider.gameObject.SetActive(true);
+        }
+
         treeHealth -= damagePerHit;
         Debug.Log(gameObject.name + " was hit! Remaining health: " + treeHealth);
 
-        // --- 2. Check if Health is Depleted ---
-        // The rest of the code only runs if the tree's health is 0 or less.
+        if (healthBarSlider != null)
+        {
+            healthBarSlider.value = (float)treeHealth / maxHealth;
+        }
+
         if (treeHealth <= 0)
         {
-            Debug.Log(gameObject.name + " has been cut down! Adding score and removing object.");
-
-            // --- 3. Add Score ---
+            // ... The rest of your code to destroy the tree ...
             if (ScoreManager.Instance != null)
             {
                 ScoreManager.Instance.AddScore(pointsForCutting);
             }
-            else
-            {
-                Debug.LogError("ScoreManager.Instance is not found in the scene! Cannot add score.");
-            }
-
-            // --- 4. Destroy the Tree GameObject ---
-            // This now only happens when the tree runs out of health.
             Destroy(gameObject);
         }
     }
